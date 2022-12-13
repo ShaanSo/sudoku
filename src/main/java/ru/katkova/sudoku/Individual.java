@@ -17,7 +17,6 @@ public class Individual implements Comparable<Individual>{
     }
 
     public int countMistake() {
-        MatrixOperations matrixOperations = new MatrixOperations();
         int mistakeCount = 0;
         int[][] transA = MatrixOperations.transpose(this.field);
         for (int i = 0; i < 9; i++) {

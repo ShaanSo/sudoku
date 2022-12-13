@@ -1,26 +1,31 @@
 package ru.katkova.sudoku;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Random;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class GeneticAlgorithm {
 
     public boolean calculate(int[][] matrix, int[][] mask) {
+//        System.out.println("----начало алгоритма-----");
+//        MatrixOperations.printArray(matrix);
+//        System.out.println("-------------------------");
+//        MatrixOperations.printArray(mask);
+//        System.out.println("----начало алгоритма-----");
 
         //создание новой популяции
-        int populationSize = 3000;
+        int populationSize = 100;
         ArrayList<Individual> population = initPopulation(mask, matrix, populationSize);
 
         int iterationCount = 1000;
         int iteration = 1;
-        int parentPoolSize = Math.floorDiv(populationSize, 100);
+        int parentPoolSize = Math.floorDiv(populationSize, 10);
 
         while (iteration <= iterationCount) {
 
             ArrayList<Individual> parentPool = parentSelection(populationSize, parentPoolSize, population);
             ArrayList<Individual> childrenPool = crossover(populationSize, parentPoolSize, parentPool, mask);
-            ArrayList<Individual> finalChildrenPool = mutation(populationSize, childrenPool, mask);
+            ArrayList<Individual> finalChildrenPool = childrenPool;
+//                    mutation(populationSize, childrenPool, mask);
 
             Collections.sort(finalChildrenPool);
             if (finalChildrenPool.get(0).getScore() == 0) {
@@ -38,12 +43,27 @@ public class GeneticAlgorithm {
         int k = 1;
         while (k <= populationSize) {
             Individual ind = new Individual();
-            Random random = new Random();
             int[][] field = new int[9][9];
-            for (int i = 0; i < 9; i++) {
-                for (int j = 0; j < 9; j++) {
-                    if (mask[i][j] == 0) field[i][j] = random.nextInt(9) + 1;
-                    else field[i][j] = solvedMatrix[i][j];
+            for (int i = 0; i < 9; i++) { //идем по блокам
+                List<Integer> numList = new ArrayList<>(List.of(1, 2, 3, 4, 5, 6, 7, 8, 9));
+                Collections.shuffle(numList);
+                for (int j = 0; j < 9; j++) { //идем по числам в блоке
+                    int row = (i / 3) * 3 + j / 3;
+                    int column = (i % 3) * 3 + j % 3;
+                    if (mask[row][column] != 0) {
+                        numList.remove((Integer) solvedMatrix[row][column]);
+                        field[row][column] = solvedMatrix[row][column];
+                    }
+                }
+                if (numList.isEmpty()) continue;
+                Iterator<Integer> iter = numList.iterator();
+                for (int j = 0; j < 9; j++) { //идем по числам в блоке
+                    int row = (i / 3) * 3 + j / 3;
+                    int column = (i % 3) * 3 + j % 3;
+                    if (mask[row][column] == 0) {
+                        field[row][column] = iter.next();
+                        iter.remove();
+                    } else field[row][column] = solvedMatrix[row][column];
                 }
             }
             ind.setField(field);
@@ -57,7 +77,7 @@ public class GeneticAlgorithm {
     public static ArrayList<Individual> parentSelection(int populationSize, int parentPoolSize, ArrayList<Individual> population) {
         ArrayList<Individual> parentPool = new ArrayList<>();
         int k = 1;
-        while (k <= populationSize) {
+        while (k <= parentPoolSize) {
             Random random = new Random();
             int index1 = random.nextInt(populationSize);
             int index2 = random.nextInt(populationSize);
@@ -86,11 +106,14 @@ public class GeneticAlgorithm {
             int[][] field2 = parent2.getField();
             int[][] field = parent1.getField();
 
-            for (int i = 0; i < 9; i++) {
-                for (int j = 0; j < 9; j++) {
-                    if (mask[i][j] == 0) {
-                        if (random.nextInt(2) == 0) field[i][j] = field1[i][j];
-                        else field[i][j] = field2[i][j];
+            for (int i = 0; i < 9; i++) { //идем по блокам
+                if (random.nextInt(2) == 0) {
+                    for (int j = 0; j < 9; j++) { //идем по числам в блоке
+                        int row = (i / 3) * 3 + j / 3;
+                        int column = (i % 3) * 3 + j % 3;
+                        if (mask[row][column] == 0) {
+                            field[row][column] = field2[row][column];
+                        }
                     }
                 }
             }
