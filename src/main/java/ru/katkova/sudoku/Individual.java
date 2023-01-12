@@ -24,10 +24,10 @@ public class Individual implements Comparable<Individual>{
             int lineTransA[] = transA[i];
             for (int j = 1; j <= 9; j++) {
                 int finalJ = j;
-                if (Arrays.stream(lineA).filter(l -> l == finalJ).count() == 0) {
+                if (Arrays.stream(lineA).filter(l -> l == finalJ).count() > 1) {
                     mistakeCount++;
                 }
-                if (Arrays.stream(lineTransA).filter(l -> l == finalJ).count() == 0) {
+                if (Arrays.stream(lineTransA).filter(l -> l == finalJ).count() > 1) {
                     mistakeCount++;
                 }
             }

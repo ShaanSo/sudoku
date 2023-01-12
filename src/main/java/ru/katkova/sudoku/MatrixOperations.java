@@ -26,12 +26,10 @@ public class MatrixOperations {
     }
 
     public static int[][] swapRandomLinesV(int[][] a) {
-        int min = 0;
-        int max = 2;
         Random random = new Random();
-        int randomRegion = random.nextInt(max - min + 1) + min;
-        int randomLine = randomRegion * 3 + random.nextInt(max - min + 1) + min;
-        int lineToswap = randomRegion * 3 + random.nextInt(max - min + 1) + min;
+        int randomRegion = random.nextInt(3) ;
+        int randomLine = randomRegion * 3 + random.nextInt(3);
+        int lineToswap = randomRegion * 3 + random.nextInt(3);
         for (int i = 0; i < 9; i++) {
             int temp = a[i][randomLine];
             a[i][randomLine] = a[i][lineToswap];
@@ -41,12 +39,10 @@ public class MatrixOperations {
     }
 
     public static int[][] swapRandomLinesH(int[][] a) {
-        int min = 0;
-        int max = 2;
         Random random = new Random();
-        int randomRegion = random.nextInt(max - min + 1) + min;
-        int randomLine = randomRegion * 3 + random.nextInt(max - min + 1) + min;
-        int lineToswap = randomRegion * 3 + random.nextInt(max - min + 1) + min;
+        int randomRegion = random.nextInt(3);
+        int randomLine = randomRegion * 3 + random.nextInt(3);
+        int lineToswap = randomRegion * 3 + random.nextInt(3);
         for (int i = 0; i < 9; i++) {
             int temp = a[randomLine][i];
             a[randomLine][i] = a[lineToswap][i];
@@ -57,11 +53,9 @@ public class MatrixOperations {
 
 
     public static int[][] swapRegionV(int[][] a) {
-        int min = 0;
-        int max = 2;
         Random random = new Random();
-        int randomRegion = random.nextInt(max - min + 1) + min;
-        int randomRegionToSwap = random.nextInt(max - min + 1) + min;
+        int randomRegion = random.nextInt(3);
+        int randomRegionToSwap = random.nextInt(3);
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 3; j++) {
                 int temp = a[i][randomRegion * 3 + j];
@@ -73,11 +67,9 @@ public class MatrixOperations {
     }
 
     public static int[][] swapRegionH(int[][] a) {
-        int min = 0;
-        int max = 2;
         Random random = new Random();
-        int randomRegion = random.nextInt(max - min + 1) + min;
-        int randomRegionToSwap = random.nextInt(max - min + 1) + min;
+        int randomRegion = random.nextInt(3);
+        int randomRegionToSwap = random.nextInt(3);
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 3; j++) {
                 int temp = a[randomRegion * 3 + j][i];
@@ -88,11 +80,9 @@ public class MatrixOperations {
         return a;    }
 
     public static int[][] swapNumbers(int[][] a) {
-        int min = 1;
-        int max = 9;
         Random random = new Random();
-        int numberOne = random.nextInt(max - min + 1) + min;
-        int numberTwo = random.nextInt(max - min + 1) + min;
+        int numberOne = random.nextInt(9) + 1;
+        int numberTwo = random.nextInt(9) + 1;
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 if (a[i][j] == numberOne) {

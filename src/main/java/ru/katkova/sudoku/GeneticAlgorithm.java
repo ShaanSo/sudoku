@@ -1,22 +1,16 @@
 package ru.katkova.sudoku;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class GeneticAlgorithm {
 
-    public boolean calculate(int[][] matrix, int[][] mask) {
-//        System.out.println("----начало алгоритма-----");
-//        MatrixOperations.printArray(matrix);
-//        System.out.println("-------------------------");
-//        MatrixOperations.printArray(mask);
-//        System.out.println("----начало алгоритма-----");
+    public Optional<Individual> calculate(int[][] matrix, int[][] mask) {
 
         //создание новой популяции
         int populationSize = 100;
         ArrayList<Individual> population = initPopulation(mask, matrix, populationSize);
 
-        int iterationCount = 1000;
+        int iterationCount = 100;
         int iteration = 1;
         int parentPoolSize = Math.floorDiv(populationSize, 10);
 
@@ -24,18 +18,14 @@ public class GeneticAlgorithm {
 
             ArrayList<Individual> parentPool = parentSelection(populationSize, parentPoolSize, population);
             ArrayList<Individual> childrenPool = crossover(populationSize, parentPoolSize, parentPool, mask);
-            ArrayList<Individual> finalChildrenPool = childrenPool;
 //                    mutation(populationSize, childrenPool, mask);
 
-            Collections.sort(finalChildrenPool);
-            if (finalChildrenPool.get(0).getScore() == 0) {
-                System.out.println(iteration);
-                return true;
-            }
+            Optional<Individual> opt = childrenPool.stream().filter(o -> o.countMistake() == 0).findFirst();
+            if (opt.isPresent()) return opt;
             iteration++;
         }
         System.out.println("no solution found");
-        return false;
+        return Optional.empty();
     }
 
     public static ArrayList<Individual> initPopulation(int[][] mask, int[][] solvedMatrix, int populationSize) {
@@ -104,16 +94,20 @@ public class GeneticAlgorithm {
 
             int[][] field1 = parent1.getField();
             int[][] field2 = parent2.getField();
-            int[][] field = parent1.getField();
+            int[][] field = new int[9][9];
 
             for (int i = 0; i < 9; i++) { //идем по блокам
                 if (random.nextInt(2) == 0) {
                     for (int j = 0; j < 9; j++) { //идем по числам в блоке
                         int row = (i / 3) * 3 + j / 3;
                         int column = (i % 3) * 3 + j % 3;
-                        if (mask[row][column] == 0) {
-                            field[row][column] = field2[row][column];
-                        }
+                        field[row][column] = field2[row][column];
+                    }
+                } else {
+                    for (int j = 0; j < 9; j++) { //идем по числам в блоке
+                        int row = (i / 3) * 3 + j / 3;
+                        int column = (i % 3) * 3 + j % 3;
+                        field[row][column] = field1[row][column];
                     }
                 }
             }
